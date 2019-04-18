@@ -1,12 +1,12 @@
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using OpenXmlPowerTools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using OpenXmlPowerTools;
 
 namespace OpenXmlDocument
 {
@@ -20,10 +20,13 @@ namespace OpenXmlDocument
 
         private static readonly string EscapedEndMarkup = @"\}\|";
 
+        private readonly bool shouldDisposeStream = false;
+
         private readonly Stream stream;
 
         public OpenXmlDocument(string filePath) : this(File.Open(filePath, FileMode.Open))
         {
+            shouldDisposeStream = true;
         }
 
         public OpenXmlDocument(Stream stream)
@@ -32,7 +35,13 @@ namespace OpenXmlDocument
             this.stream = stream;
         }
 
-        public void Dispose() => stream.Dispose();
+        public void Dispose()
+        {
+            if (shouldDisposeStream)
+            {
+                stream.Dispose();
+            }
+        }
 
         public IEnumerable<string> GetAliasNames()
         {
